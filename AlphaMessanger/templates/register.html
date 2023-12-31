@@ -1,0 +1,35 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/static/css/register.css">
+    <link rel="stylesheet" href="/static/css/sweetalert2.min.css">
+</head>
+
+<body>
+
+    <div id="Main">
+        <h3><span style="color:#1e9ec9;">Create</span> Your Account</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <input name = "username" required minlength="3" maxlength="25" placeholder="Username" type="text">
+                <input name = "email" required maxlength="60" placeholder="Email" type="email">
+                <input name = "password" required minlength="6" maxlength="60" placeholder="Password" type="password">
+                <button type="submit"><b>Register</b></button>
+            </div>
+        </form>
+        <p>Already have accounts?</p>
+        <p><a href="/login">Log in to your account</a></p>
+    <p style="text-align: center; color: red; top: 35px;">{{ ErrorMessage }}</p>
+
+    </div>
+
+</body>
+
+<script src="/static/javascript/register.js"></script>
+<script src="/static/javascript/sweetalert2.all.min.js"></script>
+</html>

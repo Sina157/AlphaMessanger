@@ -1,0 +1,29 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body>
+    <div id="Main">
+        <h3><span style="color:#1e9ec9;">Login</span> Your Account</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <input required minlength="3" placeholder="Username" type="text" name="username">
+                <input required minlength="6" placeholder="Password" type="password" name="password">
+                <button type="submit"><b>Login</b></button>
+            </div>
+        </form>
+        <p>Don't have account?</p>
+        <p><a href="/register">Create your account</a></p>
+        <p style="text-align: center; color: red; top: 35px;">{{ ErrorMessage }}</p>
+    </div>
+</body>
+<script src="/static/javascript/login.js"></script>
+
+</html>
