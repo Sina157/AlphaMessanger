@@ -10,15 +10,20 @@ async def BroadCastMessage(message):
         try:
             await client.send(message)
         except Exception as e:
-            print(str(e))
+            # print(str(e))
             ConnectedClient.pop(client)
+
+
+            
 
 async def echo(websocket):
     async for message in websocket:
         try:
-            MessageJson = loads(message)
+            MessageJson = loads(message , strict=False)
             Action = list(MessageJson.keys())[0]
             Value = list(MessageJson.values())[0]
+            Usernames = ",".join(ConnectedClient.values())
+            await BroadCastMessage('{'+f'"<UpdateOnlineUsers>":"{Usernames}"'+'}')
             if Action == "Join":
                 username = await GetUsernameByToken(Value)
                 if username == None:
@@ -27,8 +32,8 @@ async def echo(websocket):
                 Usernames = ",".join(ConnectedClient.values())
                 await BroadCastMessage('{'+f'"<UpdateOnlineUsers>":"{Usernames}"'+'}')
             else:
-                # disables html injection
-                message =  Value.replace("<", "&lt;").replace(">", "&gt;")
+                if Value.strip() == "": return
+                message =  Value.replace("<", "&lt;").replace(">", "&gt;").replace("\n", "\\n")
                 username = ConnectedClient.get(websocket)
                 await BroadCastMessage('{'+f'"{username}":"{message}"'+'}')
                 await AddMessageToDb(message,username)
