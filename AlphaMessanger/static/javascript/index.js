@@ -21,10 +21,9 @@ MessagesBox.addEventListener('scroll', function () {
 
     if (scrollTop === 0) {
         fetch("/messages?q=" + LoadedMessages)
-            .then(response => response.json())
-            .then(data => x = AddMoreMessages(data))
-            .catch(error => console.error(error));
-
+        .then(response => response.json())
+        .then(data => AddMoreMessages(data))
+        .catch(error => console.error(error));
     }
 
 });
@@ -46,7 +45,7 @@ function sendMessage() {
     text = document.getElementsByTagName('textarea')[0].value;
     document.getElementsByTagName('textarea')[0].value = "";
     ws.send(`{"SendMessage": "${text}"}`);
-    setTimeout(function () { MessagesBox.scrollBy(0, 10000); }, 100);
+    setTimeout(function () { MessagesBox.scrollBy(0, 10000); }, 200);
 }
 function connect() {
     ws = new WebSocket('ws://localhost:8080');
@@ -56,11 +55,14 @@ function connect() {
 
     ws.onmessage = function (e) {
         json = JSON.parse(e.data)
+        var res = "<h1>Online Members</h1>";
         if (Object.entries(json)[0][0] == "<UpdateOnlineUsers>") {
             usernames = Object.entries(json)[0][1].split(',');
-            for (index in usernames) {
-                document.getElementById("OnlineUsersBox").innerHTML = "<h1>Online Members</h1><p>" + usernames[index] + "</p>"
-            }
+            usernames.forEach( item => {
+                console.log(item);
+                res += "<p>" + item + "</p>";
+            })
+            document.getElementById("OnlineUsersBox").innerHTML = res;
         } else {
             username = Object.entries(json)[0][0]
             message = Object.entries(json)[0][1]
@@ -91,6 +93,6 @@ function connect() {
 connect();
 fetch("/messages?q=" + LoadedMessages)
     .then(response => response.json())
-    .then(data => x = AddMoreMessages(data))
+    .then(data => AddMoreMessages(data))
     .catch(error => console.error(error));
-setTimeout(() => MessagesBox.scrollBy(0, 10000), 100)
+setTimeout(() => MessagesBox.scrollBy(0, 10000), 200)
