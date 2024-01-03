@@ -1,9 +1,21 @@
 import asyncio
+import websockets
 from websockets.server import serve
 from threading import Thread
 from os import path 
 from django.db import connection
 from json import loads
+from sys import argv
+
+
+async def is_server_started():
+    try:
+        async with websockets.connect('ws://localhost:8080') as websocket:
+            return True
+    except ConnectionRefusedError:
+        return False
+
+
 
 async def BroadCastMessage(message):
     for client in list(ConnectedClient.keys()):
@@ -95,11 +107,14 @@ class ThreadWithReturnValue(Thread):
     def join(self, *args):
         Thread.join(self, *args)
         return self._return
-    
-    
-if not path.exists("lockfile"):
-    ConnectedClient = dict()
-    Thread(target= lambda :asyncio.run(main())).start()
-    print("WebSocket started")
 
-open("lockfile","w").close()
+
+
+if ('runserver' in argv):
+    server_status = asyncio.get_event_loop().run_until_complete(is_server_started())
+    if not server_status:
+        ConnectedClient = dict()
+        Thread(target= lambda :asyncio.run(main())).start()
+        print("WebSocket started")
+
+
